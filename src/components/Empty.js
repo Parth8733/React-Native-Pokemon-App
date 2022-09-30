@@ -4,7 +4,7 @@ import React from "react";
 const Empty = ({ displayDataType }) => {
   return (
     <View style={styles.container}>
-      {displayDataType === "database" ? <Text>No data found</Text> : null}
+      {displayDataType === "database" ? <Text>Looks like you haven't caught anything yet</Text> : null}
     </View>
   );
 };
