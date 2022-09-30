@@ -6,34 +6,46 @@ import {
   Alert,
   StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import createPokemon from "../hooks/createPokemon";
 
-export default function PokemonItem({ pokemon }) {
+export default function PokemonItem({ pokemon, displayDataType }) {
+  const [{ data, loading, error }, addPokemon] = createPokemon();
+  const [isPokemonAdded, setIsPokemonAdded] = useState(false);
+
+  console.log(pokemon);
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={{ uri: pokemon.image }} />
+      <Image style={styles.image} source={{ uri: pokemon.image_url }} />
       <View style={styles.pokemonInfo}>
         <Text style={styles.header}>{pokemon.name}</Text>
         <View style={styles.typeContainer}>
-          {pokemon.type.map((type, index) => {
+          {pokemon.types.map((type, index) => {
             return (
-              <Text key={type}>{index !== 0 ? `, ${type}` : `${type}`}</Text>
+              <Text key={index}>{index !== 0 ? `, ${type}` : `${type}`}</Text>
             );
           })}
         </View>
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          Alert.alert(
-            "Pockemon Caught",
-            `${pokemon.name} is successfully added to the Pokemon Bag`
-          );
-        }}
-      >
-        <View style={styles.addButton}>
-          <Text style={styles.addButtonText}>Add</Text>
-        </View>
-      </TouchableOpacity>
+      {displayDataType === "api" ? (
+        <TouchableOpacity
+          onPress={async () => {
+            await addPokemon(pokemon);
+            setIsPokemonAdded(true);
+            Alert.alert(
+              "Pockemon Caught",
+              `${pokemon.name} is successfully added to the Pokemon Bag`
+            );
+          }}
+          disabled={isPokemonAdded}
+        >
+          <View style={styles.addButton}>
+            <Text style={styles.addButtonText}>
+              {isPokemonAdded ? "Added" : "Add"}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -73,5 +85,5 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: "rgba(200, 200, 200, 0.5)",
   },
-  addButtonText:{ padding: 10 }
+  addButtonText: { padding: 10 },
 });
