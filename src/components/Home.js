@@ -93,5 +93,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
   },
-  pokemonListContainer: { flex: 4, marginHorizontal: 25 },
+  pokemonListContainer: { flex: 4, marginHorizontal: 25, paddingBottom: 20},
 });
