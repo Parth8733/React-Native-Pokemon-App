@@ -10,17 +10,26 @@ import React, { useEffect, useState } from "react";
 import usePokemonsApi from "../hooks/usePokemonsApi";
 import PokemonItem from "./PokemonItem";
 import Empty from "./Empty";
+import usePokemonsDB from "../hooks/usePokemonsDB";
 
 export default function Home() {
-  const [displayDataType,setDisplayDataType] = useState("api");
+  const [displayDataType, setDisplayDataType] = useState("api");
   const [{ data, loading, error }, searchPokemons] = usePokemonsApi();
+  const [
+    { data: dbData, loading: dbLoading, error: dbError },
+    searchPokemonsFromDB,
+  ] = usePokemonsDB();
   useEffect(() => {
-    searchPokemons();
-  }, []);
-  if (loading) {
+    if (displayDataType === "api") {
+      searchPokemons();
+    } else {
+      searchPokemonsFromDB();
+    }
+  }, [displayDataType]);
+  if (loading || dbLoading) {
     return <ActivityIndicator size={"large"} marginVertical={150} />;
   }
-  if (error) {
+  if (error || dbError) {
     return <Text style={styles.header}>{error}</Text>;
   }
   return (
@@ -28,25 +37,30 @@ export default function Home() {
       <View style={styles.bagContainer}>
         <TouchableOpacity
           onPress={() => {
-            if(displayDataType === "api")
-                setDisplayDataType("database");
-            else
-                setDisplayDataType("api");
+            if (displayDataType === "api") setDisplayDataType("database");
+            else setDisplayDataType("api");
           }}
         >
           <View style={styles.bagButton}>
-            <Text style={styles.bagButtonText}>{displayDataType ==="api"? "Pokémons Bag" : "Search Pokémons"}</Text>
+            <Text style={styles.bagButtonText}>
+              {displayDataType === "api" ? "Pokémons Bag" : "Search Pokémons"}
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
       <View style={styles.pokemonListContainer}>
         <FlatList
-          data={displayDataType === "api"? data : []}
-          ListEmptyComponent={()=><Empty displayDataType={displayDataType} setDisplayDataType={setDisplayDataType}/>}
+          data={displayDataType === "api" ? data : dbData}
+          ListEmptyComponent={() => (
+            <Empty
+              displayDataType={displayDataType}
+              setDisplayDataType={setDisplayDataType}
+            />
+          )}
           keyExtractor={(pokemon) => pokemon.name}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-           <PokemonItem pokemon={item} displayDataType={displayDataType}/>
+            <PokemonItem pokemon={item} displayDataType={displayDataType} />
           )}
         />
       </View>
@@ -78,5 +92,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
   },
-  pokemonListContainer: { flex: 4, marginHorizontal: 25 }
+  pokemonListContainer: { flex: 4, marginHorizontal: 25 },
 });
