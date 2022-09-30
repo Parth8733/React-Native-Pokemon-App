@@ -14,11 +14,11 @@ import usePokemonsDB from "../hooks/usePokemonsDB";
 
 export default function Home() {
   const [displayDataType, setDisplayDataType] = useState("api");
-  const [{ data, loading, error }, searchPokemons] = usePokemonsApi();
+  const [{ data, loading, error }, searchPokemons] = usePokemonsApi(); //Fetching pokemons from the API
   const [
     { data: dbData, loading: dbLoading, error: dbError },
     searchPokemonsFromDB,
-  ] = usePokemonsDB();
+  ] = usePokemonsDB();  //Fetching Pokemons from database
   useEffect(() => {
     if (displayDataType === "api") {
       searchPokemons();

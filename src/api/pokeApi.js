@@ -1,4 +1,5 @@
 import axios from "axios";
+import {API_URL } from "@env";
 export default axios.create({
-    baseURL: 'https://pokeapi.co/api/v2',
+    baseURL: `${API_URL}`,
 });

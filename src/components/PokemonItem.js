@@ -13,7 +13,6 @@ export default function PokemonItem({ pokemon, displayDataType }) {
   const [{ data, loading, error }, addPokemon] = createPokemon();
   const [isPokemonAdded, setIsPokemonAdded] = useState(false);
 
-  console.log(pokemon);
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={{ uri: pokemon.image_url }} />
@@ -22,14 +21,17 @@ export default function PokemonItem({ pokemon, displayDataType }) {
         <View style={styles.typeContainer}>
           {pokemon.types.map((type, index) => {
             return (
+              //checking for first element, or not and last element
               <Text key={index}>{index !== 0 ? `, ${type}` : `${type}`}</Text>
             );
           })}
         </View>
       </View>
+      {/*Displaying Add button only when data is coming from API*/}
       {displayDataType === "api" ? (
         <TouchableOpacity
           onPress={async () => {
+            //Calling Insert Pokemon hook
             await addPokemon(pokemon);
             setIsPokemonAdded(true);
             Alert.alert(
