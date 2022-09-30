@@ -20,12 +20,13 @@ export default function Home() {
     searchPokemonsFromDB,
   ] = usePokemonsDB();  //Fetching Pokemons from database
   useEffect(() => {
-    if (displayDataType === "api") {
-      searchPokemons();
-    } else {
+    searchPokemons();
+}, []);
+  useEffect(() => {
+    if (displayDataType === "database") {
       searchPokemonsFromDB();
     }
-  }, [displayDataType]);
+  }, [displayDataType])
   if (loading || dbLoading) {
     return <ActivityIndicator size={"large"} marginVertical={150} />;
   }
