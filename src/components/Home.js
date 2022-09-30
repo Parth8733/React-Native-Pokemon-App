@@ -6,11 +6,13 @@ import {
   ActivityIndicator,
   FlatList,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import usePokemonsApi from "../hooks/usePokemonsApi";
 import PokemonItem from "./PokemonItem";
+import Empty from "./Empty";
 
 export default function Home() {
+  const [displayDataType,setDisplayDataType] = useState("api");
   const [{ data, loading, error }, searchPokemons] = usePokemonsApi();
   useEffect(() => {
     searchPokemons();
@@ -26,21 +28,25 @@ export default function Home() {
       <View style={styles.bagContainer}>
         <TouchableOpacity
           onPress={() => {
-            alert("Displaying Data from Database");
+            if(displayDataType === "api")
+                setDisplayDataType("database");
+            else
+                setDisplayDataType("api");
           }}
         >
           <View style={styles.bagButton}>
-            <Text style={styles.bagButtonText}>Pokémons Bag</Text>
+            <Text style={styles.bagButtonText}>{displayDataType ==="api"? "Pokémons Bag" : "Search Pokémons"}</Text>
           </View>
         </TouchableOpacity>
       </View>
       <View style={styles.pokemonListContainer}>
         <FlatList
-          data={data}
+          data={displayDataType === "api"? data : []}
+          ListEmptyComponent={()=><Empty displayDataType={displayDataType} setDisplayDataType={setDisplayDataType}/>}
           keyExtractor={(pokemon) => pokemon.name}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-           <PokemonItem pokemon={item} />
+           <PokemonItem pokemon={item} displayDataType={displayDataType}/>
           )}
         />
       </View>
