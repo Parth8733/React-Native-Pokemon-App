@@ -5,7 +5,7 @@ export default function Header() {
   return (
     <View style={styles.container}>
       <Text style={styles.lightHeader}>Welcome to</Text>
-      <Text style={styles.boldHeader}>Pokemon world!</Text>
+      <Text style={styles.boldHeader}>Pokémon world!</Text>
     </View>
   );
 }
