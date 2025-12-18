@@ -20,20 +20,30 @@ export default () => {
       //Finding pokemons 
       const response = await pokeApi.get("/pokemon?limit=20&offset=0");
       //checking if data is exists
-      if (response.data.results) {
+      if (response.data && response.data.results && Array.isArray(response.data.results)) {
         let pokemons = response.data.results;
         //Fetching details for pokemons
         await Promise.all(
           pokemons.map(async (pokemon) => {
+            // Security: Validate pokemon object has required properties
+            if (!pokemon || !pokemon.name) {
+              return;
+            }
             let pokemonDetails = await pokeApi.get(`/pokemon/${pokemon.name}`);
+            // Security: Validate response structure before accessing nested properties
+            if (!pokemonDetails.data || !Array.isArray(pokemonDetails.data.types) || !pokemonDetails.data.sprites) {
+              return;
+            }
             let pokemonTypes = [];
-            await pokemonDetails.data.types.map((type) => {
-              pokemonTypes.push(type.type.name);
+            pokemonDetails.data.types.forEach((type) => {
+              if (type && type.type && type.type.name) {
+                pokemonTypes.push(type.type.name);
+              }
             });
             let pokemonInfo = {
               name: pokemon.name,
               types: pokemonTypes,
-              image_url: pokemonDetails.data.sprites.front_default,
+              image_url: pokemonDetails.data.sprites.front_default || '',
             };
             //storing details of pokemon
             pokemonData.push(pokemonInfo);
@@ -46,7 +56,7 @@ export default () => {
         error: null,
       });
     } catch (error) {
-      console.log(error);
+      // Security: Avoid logging error details that may contain sensitive information
       setResults({
         data: null,
         loading: false,

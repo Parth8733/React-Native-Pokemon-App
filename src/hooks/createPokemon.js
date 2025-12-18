@@ -20,10 +20,14 @@ export default () => {
       error: null,
     });
     try {
+      // Security: Validate input before sending to API
+      if (!pokemon || !pokemon.name || !Array.isArray(pokemon.types)) {
+        throw new Error("Invalid pokemon data");
+      }
       const response = await pokemonApi.post("/pokemon/create",{
             name: pokemon.name,
             types:pokemon.types,
-            image_url: pokemon.image_url,
+            image_url: pokemon.image_url || '',
       });
       setResults({
         data: response.data ? response.data : [],
@@ -32,7 +36,7 @@ export default () => {
       });
       
     } catch (error) {
-        console.log(error);
+        // Security: Avoid logging error details that may contain sensitive information
         setResults({
             data: null,
             loading: false,
