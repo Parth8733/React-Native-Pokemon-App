@@ -31,7 +31,7 @@ export default () => {
             }
             let pokemonDetails = await pokeApi.get(`/pokemon/${pokemon.name}`);
             // Security: Validate response structure before accessing nested properties
-            if (!pokemonDetails.data || !pokemonDetails.data.types || !pokemonDetails.data.sprites) {
+            if (!pokemonDetails.data || !Array.isArray(pokemonDetails.data.types) || !pokemonDetails.data.sprites) {
               return;
             }
             let pokemonTypes = [];
