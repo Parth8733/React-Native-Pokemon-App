@@ -17,14 +17,16 @@ export default () => {
     });
     try {
       const response = await pokemonApi.get("/pokemon/");
+      // Security: Validate response data is an array before using
+      const data = response.data && Array.isArray(response.data) ? response.data : [];
       setResults({
-        data: response.data ? response.data : [],
+        data: data,
         loading: false,
         error: null,
       });
       
     } catch (error) {
-        console.log(error);
+        // Security: Avoid logging error details that may contain sensitive information
         setResults({
             data: null,
             loading: false,

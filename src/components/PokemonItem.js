@@ -19,7 +19,7 @@ export default function PokemonItem({ pokemon, displayDataType }) {
       <View style={styles.pokemonInfo}>
         <Text style={styles.header}>{pokemon.name}</Text>
         <View style={styles.typeContainer}>
-          {pokemon.types.map((type, index) => {
+          {Array.isArray(pokemon.types) && pokemon.types.map((type, index) => {
             return (
               //checking for first element, or not and last element
               <Text key={index}>{index !== 0 ? `, ${type}` : `${type}`}</Text>
